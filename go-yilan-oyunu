@@ -1,0 +1,254 @@
+ package main
+
+
+
+import (
+
+    "fmt"
+
+    "os"
+
+    "os/exec"
+
+    "time"
+
+    "math/rand"
+
+    "bufio"
+
+)
+
+
+
+const (
+
+    width  = 20
+
+    height = 10
+
+)
+
+
+
+type Point struct {
+
+    x, y int
+
+}
+
+
+
+var (
+
+    snake     []Point
+
+    direction Point
+
+    food      Point
+
+    score     int
+
+)
+
+
+
+func init() {
+
+    rand.Seed(time.Now().UnixNano())
+
+    direction = Point{1, 0} // Başlangıç yönü sağa
+
+    snake = []Point{{width / 2, height / 2}}
+
+    placeFood()
+
+}
+
+
+
+func main() {
+
+    reader := bufio.NewReader(os.Stdin)
+
+    gameOver := false
+
+
+
+    for !gameOver {
+
+        clearScreen()
+
+        drawBoard()
+
+
+
+        fmt.Println("Puan:", score)
+
+        fmt.Print("Hareket (w/a/s/d): ")
+
+        input, _ := reader.ReadString('\n')
+
+
+
+        switch input[0] {
+
+        case 'w':
+
+            direction = Point{0, -1}
+
+        case 'a':
+
+            direction = Point{-1, 0}
+
+        case 's':
+
+            direction = Point{0, 1}
+
+        case 'd':
+
+            direction = Point{1, 0}
+
+        }
+
+
+
+        moveSnake()
+
+
+
+        if checkCollision() {
+
+            gameOver = true
+
+            fmt.Println("Oyun Bitti! Final Puanı:", score)
+
+        }
+
+
+
+        time.Sleep(200 * time.Millisecond)
+
+    }
+
+}
+
+
+
+func drawBoard() {
+
+    board := make([][]rune, height)
+
+    for i := range board {
+
+        board[i] = make([]rune, width)
+
+        for j := range board[i] {
+
+            board[i][j] = ' '
+
+        }
+
+    }
+
+
+
+    for _, p := range snake {
+
+        board[p.y][p.x] = 'O'
+
+    }
+
+    board[food.y][food.x] = 'X'
+
+
+
+    for _, row := range board {
+
+        for _, cell := range row {
+
+            fmt.Print(string(cell), " ")
+
+        }
+
+        fmt.Println()
+
+    }
+
+}
+
+
+
+func moveSnake() {
+
+    head := snake[0]
+
+    newHead := Point{head.x + direction.x, head.y + direction.y}
+
+
+
+    if newHead == food {
+
+        score++
+
+        snake = append([]Point{newHead}, snake...)
+
+        placeFood()
+
+    } else {
+
+        snake = append([]Point{newHead}, snake[:len(snake)-1]...)
+
+    }
+
+}
+
+
+
+func checkCollision() bool {
+
+    head := snake[0]
+
+    if head.x < 0 || head.x >= width || head.y < 0 || head.y >= height {
+
+        return true
+
+    }
+
+    for _, s := range snake[1:] {
+
+        if head == s {
+
+            return true
+
+        }
+
+    }
+
+    return false
+
+}
+
+
+
+func placeFood() {
+
+    food = Point{rand.Intn(width), rand.Intn(height)}
+
+}
+
+
+
+func clearScreen() {
+
+    cmd := exec.Command("clear")
+
+    if err := cmd.Run(); err != nil {
+
+        cmd = exec.Command("cls")
+
+        cmd.Run()
+
+    }
+
+}
+
