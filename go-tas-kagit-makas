@@ -1,0 +1,68 @@
+ package main
+
+
+
+import (
+
+	"fmt"
+
+	"math/rand"
+
+	"time"
+
+)
+
+
+
+func main() {
+
+	rand.Seed(time.Now().UnixNano())
+
+	options := []string{"Taş", "Kağıt", "Makas"}
+
+	var playerChoice int
+
+
+
+	fmt.Println("Taş (0), Kağıt (1), Makas (2)")
+
+	fmt.Print("Seçiminiz: ")
+
+	fmt.Scanf("%d", &playerChoice)
+
+
+
+	if playerChoice < 0 || playerChoice > 2 {
+
+		fmt.Println("Geçersiz seçim. Lütfen 0, 1 veya 2 girin.")
+
+		return
+
+	}
+
+
+
+	computerChoice := rand.Intn(3)
+
+	fmt.Printf("Siz: %s, Bilgisayar: %s\n", options[playerChoice], options[computerChoice])
+
+
+
+	switch playerChoice {
+
+	case computerChoice:
+
+		fmt.Println("Berabere!")
+
+	case (computerChoice + 1) % 3:
+
+		fmt.Println("Kazandınız!")
+
+	default:
+
+		fmt.Println("Kaybettiniz!")
+
+	}
+
+}
+
