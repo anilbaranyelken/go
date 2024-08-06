@@ -1,0 +1,62 @@
+ package main
+
+
+
+import (
+
+	"fmt"
+
+	"math/rand"
+
+	"time"
+
+)
+
+
+
+func main() {
+
+	rand.Seed(time.Now().UnixNano())
+
+	target := rand.Intn(100) + 1
+
+	var guess int
+
+	var attempts int
+
+
+
+	fmt.Println("1 ile 100 arasında bir sayı tuttum. Bakalım kaç tahminde bulabileceksin?")
+
+
+
+	for {
+
+		attempts++
+
+		fmt.Print("Tahmininiz: ")
+
+		fmt.Scanf("%d", &guess)
+
+
+
+		if guess < target {
+
+			fmt.Println("Daha büyük bir sayı girin.")
+
+		} else if guess > target {
+
+			fmt.Println("Daha küçük bir sayı girin.")
+
+		} else {
+
+			fmt.Printf("Tebrikler! %d tahminde doğru sayıyı buldunuz.\n", attempts)
+
+			break
+
+		}
+
+	}
+
+}
+
